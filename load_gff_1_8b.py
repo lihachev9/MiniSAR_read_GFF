@@ -44,13 +44,7 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True):
         print("Reading sqrt(magnitude) pixels.")
         n = FirstIndexLength * SecondIndexLength
         raw = fid.read(n)
-        img = np.frombuffer(raw, dtype=np.uint8)
-        # reshape в (SecondIndexLength, FirstIndexLength) — как в MATLAB fread(fid,[A,B])
-        img = img.reshape(SecondIndexLength, FirstIndexLength)
-        # MATLAB: если Flip -> транспонирование
-        if Flip:
-            img = img.T
-        Image = img
+        Image = np.frombuffer(raw, dtype=np.uint8)
 
     elif Header["ImageType"] == 1:
         bpp = int(Header["BytesPerPixel"])
@@ -67,7 +61,6 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True):
                 phase = arr[0::2].astype(np.float64)
                 mag = arr[1::2].astype(np.float64)
                 Image = (mag * np.exp(1j * phase * 2 * np.pi / (2 ** 16))).astype(np.complex64)
-            Image = Image.reshape(SecondIndexLength, FirstIndexLength)
         elif bpp == 8:
             # phase = 4 байта (uint32), mag = 4 байта (uint32)
             n = FirstIndexLength * 2 * SecondIndexLength
@@ -81,14 +74,11 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True):
                 phase = arr[0::2].astype(np.float64)
                 mag = arr[1::2].astype(np.float64)
                 Image = (mag * np.exp(1j * phase * 2 * np.pi / (2 ** 32))).astype(np.complex64)
-            Image = Image.reshape(SecondIndexLength, FirstIndexLength)
         else:
             raise ValueError(
                 f"ImageType=1: неподдерживаемый BytesPerPixel={bpp} "
                 f"(ожидается 4 или 8)"
             )
-        if Flip:
-            Image = Image.T
 
     elif Header["ImageType"] == 2:
         n = 2 * FirstIndexLength * SecondIndexLength
@@ -102,12 +92,13 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True):
             real = arr[0::2].astype(np.float32)
             imag = arr[1::2].astype(np.float32)
             Image = (real + 1j * imag).astype(np.complex64)
+    else:
+        print(f"Unknown pixel type: {Header['ImageType']}.", file=sys.stderr)
+
+    if Image is not None:
         Image = Image.reshape(SecondIndexLength, FirstIndexLength)
         if Flip:
             Image = Image.T
-
-    else:
-        print(f"Unknown pixel type: {Header['ImageType']}.", file=sys.stderr)
 
     fid.close()
 
