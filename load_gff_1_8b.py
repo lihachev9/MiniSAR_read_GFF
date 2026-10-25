@@ -54,7 +54,7 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True) -> tuple[np.ndarra
             raw = fid.read(n * 2)   # 2 байта на ushort
             arr = np.frombuffer(raw, dtype="<u2" if Header["Endian"] == 0 else ">u2")
             if amplitude_only:
-                print("Reading complex (magnitude) pixels.")
+                print("Reading sqrt(magnitude) pixels.")
                 Image = np.sqrt(arr[1::2].astype(np.float32))
             else:
                 print("Reading complex (magnitude and phase) pixels.")
@@ -67,7 +67,7 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True) -> tuple[np.ndarra
             raw = fid.read(n * 4)
             arr = np.frombuffer(raw, dtype="<u4" if Header["Endian"] == 0 else ">u4")
             if amplitude_only:
-                print("Reading complex (magnitude) pixels.")
+                print("Reading sqrt(magnitude) pixels.")
                 Image = np.sqrt(arr[1::2].astype(np.float32))
             else:
                 print("Reading complex (magnitude and phase) pixels.")
@@ -85,7 +85,7 @@ def load_gff_1_8b(FileName: str, amplitude_only: bool = True) -> tuple[np.ndarra
         raw = fid.read(n * 4)   # float32
         arr = np.frombuffer(raw, dtype="<f4" if Header["Endian"] == 0 else ">f4")
         if amplitude_only:
-            print("Reading complex (real) pixels.")
+            print("Reading sqrt(real) pixels.")
             Image = np.sqrt(arr[0::2].astype(np.float32))
         else:
             print("Reading complex (real and imaginary) pixels.")
