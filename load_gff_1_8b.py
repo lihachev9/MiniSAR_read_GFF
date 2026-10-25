@@ -2,23 +2,23 @@ import numpy as np
 from read_gff_header_1_8b import read_gff_header_1_8b
 
 
-def load_gff_1_8b(FileName: str, amplitude_only: bool = True):
+def load_gff_1_8b(FileName: str, amplitude_only: bool = True) -> tuple[np.ndarray | None, dict | None]:
     """
     Загружает GFF-изображение.
 
     Параметры
     ----------
     FileName : str
-        Путь к файлу..
+        Путь к файлу.
     amplitude_only : bool, optional
         Если True, возвращает амплитуду (sqrt(magnitude)), иначе комплексное число.
 
     Возвращает
     ----------
-    Image : np.ndarray
-        Массив пикселей.
-    Header : dict
-        Заголовок файла.
+    Image : np.ndarray | None
+        Массив пикселей или None при ошибке.
+    Header : dict | None
+        Заголовок файла или None при ошибке.
     """
     # ---- Открытие файла и чтение заголовка ----
     Header, fid = read_gff_header_1_8b(FileName)
