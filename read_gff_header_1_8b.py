@@ -17,7 +17,7 @@ def _read_char(fid, n: int) -> str:
     return data.rstrip(b"\x00").decode("latin-1")
 
 
-def read_gff_header_1_8b(FileName: str) -> tuple[dict | None, int | None]:
+def read_gff_header_1_8b(FileName: str):
     """
     Читает заголовок GFF-файла.
 

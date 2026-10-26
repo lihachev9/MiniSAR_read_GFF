@@ -2,7 +2,7 @@ import numpy as np
 from read_gff_header_1_8b import read_gff_header_1_8b
 
 
-def load_gff_1_8b(FileName: str, amplitude_only: bool = True) -> tuple[np.ndarray | None, dict | None]:
+def load_gff_1_8b(FileName: str, amplitude_only: bool = True):
     """
     Загружает GFF-изображение.
 
